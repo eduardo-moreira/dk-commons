@@ -215,6 +215,24 @@ public class GenericDAO<T> implements Serializable {
 	 * @return
 	 */
 	public List<T> list(T filter, boolean any) throws Exception {
+		return list(filter, any, null);
+	}
+
+	/**
+	 * Lista todos os registros encontrados para o filtro da entidade.
+	 * 
+	 * @param filter
+	 *            filtro (entidade)
+	 * 
+	 * @param any
+	 *            caso seja true, irá usar OR entre as condições, caso contrário
+	 *            AND.
+	 * 
+	 * @param orderBy ordem do sql
+	 * 
+	 * @return
+	 */
+	public List<T> list(T filter, boolean any, String orderBy) throws Exception {
 
 		if (filter == null) {
 			return listAll();
@@ -234,16 +252,14 @@ public class GenericDAO<T> implements Serializable {
 		List<Field> fields = ReflectionUtils.getDeclaredFields(this.persistentClass);
 		List<Object> values = new ArrayList<Object>();
 
-		String orderBy = "";
-
 		// Verificando campos
 		if (fields != null) {
 
 			for (Field field : fields) {
 
-				if (field.isAnnotationPresent(Descriptor.class)) {
-					orderBy = " ORDER BY " + field.getName();
-				}
+				if ((orderBy == null) && (field.isAnnotationPresent(Descriptor.class))) {
+					orderBy = field.getName();
+			    } 
 
 				if (!field.isAnnotationPresent(Id.class) // Descartando atributo
 															// ID
@@ -323,8 +339,10 @@ public class GenericDAO<T> implements Serializable {
 			query.append(" WHERE ");
 			query.append(where);
 		}
-
-		query.append(orderBy);
+		
+		if (orderBy != null) {
+		      query.append(" ORDER BY " + orderBy);
+		} 
 
 		Query queryData = manager.createQuery(query.toString());
 

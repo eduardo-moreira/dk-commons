@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.dk.utils.web.controller.system.SessionController;
 import com.dk.utils.web.session.SessionUtils;
 
 /**
@@ -27,8 +25,6 @@ import com.dk.utils.web.session.SessionUtils;
 public class CheckUserAccess implements Filter {
 
 //	@Inject
-//	SessionController sessionControl;
-
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.dk.utils.web.controller.system;
+package com.dk.utils.web.beans;
 
 import javax.inject.Named;
 

@@ -26,6 +26,11 @@ public class GenericService<T> implements Serializable {
 	private static final long serialVersionUID = 5772803465752621277L;
 
 	/**
+	 * Service Factory.
+	 */
+	protected GenericServiceFactory serviceFactory;
+
+	/**
 	 * {@link GenericDAO}.
 	 */
 	protected GenericDAO<T> dao;
@@ -39,6 +44,25 @@ public class GenericService<T> implements Serializable {
 	@SuppressWarnings("unchecked")
 	public Class<T> getEntityClass() {
 		return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	}
+
+	/**
+	 * Recupera o valor da propriedade serviceFactory.
+	 * 
+	 * @return serviceFactory
+	 */
+	public GenericServiceFactory getServiceFactory() {
+		return serviceFactory;
+	}
+
+	/**
+	 * Atribui valor a propriedade serviceFactory.
+	 * 
+	 * @param serviceFactory
+	 *            novo valor para serviceFactory
+	 */
+	public void setServiceFactory(GenericServiceFactory serviceFactory) {
+		this.serviceFactory = serviceFactory;
 	}
 
 	/**

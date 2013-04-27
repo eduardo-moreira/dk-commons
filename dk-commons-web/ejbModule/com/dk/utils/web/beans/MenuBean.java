@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.dk.utils.web.controller.system;
+package com.dk.utils.web.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ import java.util.TreeMap;
 
 import javax.el.ExpressionFactory;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
-
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.menuitem.MenuItem;
 import org.primefaces.component.submenu.Submenu;
@@ -44,6 +44,35 @@ public class MenuBean implements Serializable {
 
 	private long uniqueID = 0L;
 
+	private MenuModel userMenu;
+
+	/**
+	 * Recupera o valor da propriedade userMenu.
+	 * 
+	 * @return userMenu
+	 */
+	public MenuModel getUserMenu() {
+		return this.userMenu;
+	}
+
+	/**
+	 * Atribui valor a propriedade userMenu.
+	 * 
+	 * @param userMenu
+	 *            novo valor para userMenu
+	 */
+	public void setUserMenu(MenuModel userMenu) {
+		this.userMenu = userMenu;
+	}
+
+	public void createUserMenu(User user) {
+		this.userMenu = getMenuModel(user);
+	}
+
+	public void clear() {
+		this.userMenu = null;
+	}
+
 	/**
 	 * 
 	 * @param menus
@@ -58,9 +87,8 @@ public class MenuBean implements Serializable {
 		// Montando Mapa de caminhos de recurso
 		Map<String, List<Resource>> itens = new TreeMap<String, List<Resource>>();
 
+		
 		for (Resource resource : user.getPerfil().getResources(ResourceType.FORM)) {
-			
-			System.out.println(".." + resource.getName());
 
 			String key = resource.getMenuPath();
 
@@ -71,7 +99,7 @@ public class MenuBean implements Serializable {
 				if (key.indexOf(';') > -1) {
 					key = key.substring(0, key.lastIndexOf(';'));
 				}
-				
+
 				List<Resource> itensAux = itens.get(key);
 
 				// vendo se tem algo para o caminho
@@ -166,12 +194,13 @@ public class MenuBean implements Serializable {
 		// Alterar senha
 		Resource resAlterarSenha = new Resource("system.changePassword", TargetType.ACTION, "#{sessionController.changePassword}", null);
 		resAlterarSenha.setIcon("ui-icon-locked");
-		resAlterarSenha.setAjax(true);
+		resAlterarSenha.setAjax(Boolean.valueOf(true));
 		addMenuItem(mSystemUser, resAlterarSenha);
 
 		// Menu Sair
-		Resource resSair = new Resource("system.exit", TargetType.ACTION, "#{sessionController.logout}", null);
+		Resource resSair = new Resource("system.exit", TargetType.ACTION, "#{loginController.logout}", null);
 		resSair.setIcon("ui-icon-power");
+		resSair.setAjax(Boolean.valueOf(false));
 		addMenuItem(mSystem, resSair);
 	}
 
@@ -215,7 +244,7 @@ public class MenuBean implements Serializable {
 	 */
 	public Submenu createSubMenu(String pLabel, String pIcon) {
 		Submenu submenu = new Submenu();
-		submenu.setId("mnuItem" + uniqueID++);
+		submenu.setId("mnuItem" + this.uniqueID++);
 
 		String label = ResourcesUtils.getMenuLabel(pLabel);
 
@@ -301,7 +330,7 @@ public class MenuBean implements Serializable {
 			item.setUrl(resource.getTarget());
 		}
 
-		if (resource.isAjax() != null && resource.isAjax()) {
+		if ((resource.isAjax() != null) && (resource.isAjax().booleanValue())) {
 			item.setAjax(true);
 		} else {
 			item.setAjax(false);

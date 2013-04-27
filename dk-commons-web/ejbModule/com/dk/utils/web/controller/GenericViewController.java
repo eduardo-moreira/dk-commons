@@ -288,7 +288,7 @@ public abstract class GenericViewController<T> extends BasicController {
 	public void setService() {
 		try {
 			service = getService();
-			service.setCurrentUser(session.getUser());
+			this.service.setCurrentUser(this.sessionBean.getUser());
 		} catch (Exception e) {
 			handleErrors(e);
 		}

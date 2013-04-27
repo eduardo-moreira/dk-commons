@@ -52,21 +52,19 @@ public class Perfil implements Serializable {
 	private List<Module> modules;
 
 	/**
-	 * 
 	 * Cria uma nova instancia de Perfil.
 	 */
 	public Perfil() {
-
 	}
 
 	/**
 	 * Cria uma nova instancia de Perfil.
 	 * 
 	 * @param id
+	 * 
 	 * @param name
 	 */
 	public Perfil(int id, String name) {
-		super();
 		this.id = id;
 		this.name = name;
 	}
@@ -75,13 +73,13 @@ public class Perfil implements Serializable {
 	 * Cria uma nova instancia de Perfil.
 	 * 
 	 * @param name
+	 * 
 	 * @param module
 	 */
-	public Perfil(String name, Module... module) {
-		super();
+	public Perfil(String name, Module[] module) {
 		this.name = name;
-		this.modules = new ArrayList<>();
-		Collections.addAll(modules, module);
+		this.modules = new ArrayList<Module>();
+		Collections.addAll(this.modules, module);
 	}
 
 	/**
@@ -157,71 +155,62 @@ public class Perfil implements Serializable {
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	@Override
 	public boolean equals(Object obj) {
 		Perfil another = (Perfil) obj;
-		return another.id == id;
+		return another.id == this.id;
 	}
 
 	/**
-	 * Recupera a lista de forms do perfil.
+	 * Recupera os recursos do perfil.
+	 * 
+	 * @param resourceType
 	 * 
 	 * @return
 	 */
 	public List<Resource> getResources(ResourceType resourceType) {
+		List<Resource> result = new ArrayList<>();
 
-		List<Resource> result = new ArrayList<Resource>();
-
-		if (modules != null) {
-
-			for (Module m : modules) {
-
-				// Caso não tenha filtro, selecionar tudo
+		if (this.modules != null) {
+			for (Module m : this.modules) {
 				if (resourceType == null) {
 					result.addAll(m.getResources());
-				}
-				// Filtrar pelo tipo informado
-				else {
-
-					if (m.getResources() != null) {
-
-						for (Resource r : m.getResources()) {
-							if (r.getResourceType() == resourceType) {
-								result.add(r);
-							}
+				} else if (m.getResources() != null) {
+					for (Resource r : m.getResources()) {
+						if (r.getResourceType() == resourceType) {
+							result.add(r);
 						}
-
 					}
 				}
+
 			}
+
 		}
 
 		return result;
 	}
 
 	/**
-	 * Adiciona novo acesso a recurso ao perfil.
+	 * Adiciona um modulo.
 	 * 
-	 * @param resource
-	 * @param write
+	 * @param m
 	 */
 	public void addModule(Module m) {
 
-		if (modules == null) {
-			modules = new ArrayList<>();
+		if (this.modules == null) {
+			this.modules = new ArrayList<Module>();
 		}
 
-		modules.add(m);
+		this.modules.add(m);
 	}
 
 	/**
-	 * Recupera um recurso de um perfil.
+	 * Pega um recurso.
 	 * 
 	 * @param resourceType
 	 * @param target
+	 * @return
 	 */
 	public Resource getResource(ResourceType resourceType, String target) {
-
 		List<Resource> lista = getResources(resourceType);
 
 		for (Resource r : lista) {

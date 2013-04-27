@@ -7,10 +7,9 @@ import com.dk.utils.domain.system.Perfil;
 import com.dk.utils.domain.system.User;
 import com.dk.utils.exception.BusinessException;
 import com.dk.utils.persistence.system.UserDAO;
-import com.dk.utils.persistence.system.resource.ModuleDAO;
+import com.dk.utils.persistence.system.resource.ResourceDAO;
 import com.dk.utils.security.CryptoUtis;
 import com.dk.utils.service.common.GenericService;
-import com.dk.utils.service.system.resource.ModuleService;
 
 /**
  * @author eduardo
@@ -40,66 +39,51 @@ public class UserService extends GenericService<User> {
 	 */
 	public User doLogin(String email, String password) throws Exception {
 
-		// Retorno
 		User user = null;
 
-		// Verificando login de admin
-		if ("admin".equals(email)) {
+	    User filter = new User();
+	    filter.setEmail(email);
 
-			// TODO recuperar de outro lugar a senha (criptografada)
-			if ("123".equals(password)) {
+	    List<User> login = getDao().list(filter, false);
 
-				// Criando user para admin
-				user = new User();
-				user.setNome("Administrador");
+	    if ((login != null) && (login.size() == 1))
+	    {
+	      password = CryptoUtis.encode(password);
+	      user = (User)login.get(0);
 
-				// Criando perfil
-				Perfil perfilAdmin = new Perfil();
+	      if (!user.getPassword().equals(password))
+	        throw new BusinessException("login.senhaInvalida");
+	    }
+	    else {
+	      throw new BusinessException("login.userInvalido");
+	    }
+	    
+	    ResourceDAO resourceDAO = new ResourceDAO();
+	    
+	    if ("admin".equals(email))
+	    {
+	      user = new User();
+	      user.setNome("Administrador");
 
-				// Criando service para modulo
-				ModuleService moduleService = new ModuleService();
-				moduleService.setDao(new ModuleDAO());
-				moduleService.getDao().setManager(getDao().getManager());
-				
-				// Adicionado todos os modulos
-				perfilAdmin.setModules(moduleService.listAll());
+	      Perfil perfilAdmin = new Perfil();
+	      resourceDAO.setManager(getDao().getManager());
+	      Module module = new Module();
+	      module.setResources(resourceDAO.listAll());
+	      perfilAdmin.addModule(module);
+	      user.addPerfil(perfilAdmin);
+	    }
+	    else
+	    {
+	    	// Inicializando modulos.
+	    	for (Perfil p : user.getPerfis()) {
+	    		for (Module m : p.getModules()) {
+	    			m.getResources().size();
+	    		}
+	    	}
 
-				user.addPerfil(perfilAdmin);
+	    }
 
-				// Inicializando modulos
-				for (Module m : user.getPerfil().getModules()) {
-					m.setResources(moduleService.getResources(m));
-				}
-
-
-			} else {
-				throw new BusinessException("login.senhaAdminInvalida");
-			}
-
-		} else {
-
-			User filter = new User();
-			filter.setEmail(email);
-
-
-			List<User> login = getDao().list(filter, false);
-
-			// Caso tenha encontrado
-			if (login != null && login.size() == 1) {
-				// Validando senha
-				password = CryptoUtis.encode(password);
-				user = login.get(0);
-
-				if (!user.getPassword().equals(password)) {
-					throw new BusinessException("login.senhaInvalida");
-				}
-			} else {
-				throw new BusinessException("login.userInvalido");
-			}
-
-		}
-
-		return user;
+	    return user;
 	}
 
 }

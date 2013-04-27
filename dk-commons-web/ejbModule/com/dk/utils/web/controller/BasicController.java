@@ -6,6 +6,7 @@ package com.dk.utils.web.controller;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -21,8 +22,7 @@ import org.primefaces.context.RequestContext;
 import com.dk.utils.domain.system.User;
 import com.dk.utils.exception.BusinessException;
 import com.dk.utils.service.common.GenericServiceFactory;
-import com.dk.utils.web.controller.system.MenuBean;
-import com.dk.utils.web.controller.system.SessionController;
+import com.dk.utils.web.beans.SessionBean;
 import com.dk.utils.web.message.Message;
 import com.dk.utils.web.message.MessageUtils;
 import com.dk.utils.web.session.SessionUtils;
@@ -42,8 +42,8 @@ public class BasicController implements Serializable {
 	 * Controller de sessão.
 	 */
 	@Inject
-	protected SessionController session;
-	
+	protected SessionBean sessionBean;
+
 	/**
 	 * Fabrica de serviços.
 	 */
@@ -67,12 +67,6 @@ public class BasicController implements Serializable {
 	protected Message message;
 
 	/**
-	 * Auxilia na ação de manipular/criar menus para telas.
-	 */
-	@Inject
-	protected MenuBean menuBean;
-
-	/**
 	 * Logger.
 	 */
 	protected Logger logger;
@@ -86,22 +80,22 @@ public class BasicController implements Serializable {
 	}
 
 	/**
-	 * Recupera o valor da propriedade session.
+	 * Recupera o valor da propriedade sessionBean.
 	 * 
-	 * @return session
+	 * @return sessionBean
 	 */
-	public SessionController getSession() {
-		return session;
+	public SessionBean getSessionBean() {
+		return sessionBean;
 	}
 
 	/**
-	 * Atribui valor a propriedade session.
+	 * Atribui valor a propriedade sessionBean.
 	 * 
-	 * @param session
-	 *            novo valor para session
+	 * @param sessionBean
+	 *            novo valor para sessionBean
 	 */
-	public void setSession(SessionController session) {
-		this.session = session;
+	public void setSessionBean(SessionBean sessionBean) {
+		this.sessionBean = sessionBean;
 	}
 
 	/**
@@ -156,7 +150,7 @@ public class BasicController implements Serializable {
 	 * @return
 	 */
 	public String createView() {
-		session.setCurrentView(this);
+		this.sessionBean.setCurrentView(this);
 		return null;
 	}
 
@@ -186,7 +180,7 @@ public class BasicController implements Serializable {
 	 * @return
 	 */
 	protected String gotoErrorPage(Exception e) {
-		session.setCurrentView(this);
+		this.sessionBean.setCurrentView(this);
 		handleErrors(e);
 		return FlowConstants.PAGE_ERROR;
 	}
@@ -259,13 +253,14 @@ public class BasicController implements Serializable {
 		StackTraceElement stack = exception.getStackTrace()[0];
 
 		// Caso seja um erro negocial experado
-		if (exception instanceof BusinessException) {
+		if ((exception instanceof BusinessException)) {
 			BusinessException be = (BusinessException) exception;
-			logDebug("Ocorreu um erro em {0}.{1} [{2}] --> {3}", stack.getClassName(), stack.getMethodName(), stack.getLineNumber(), be.getCode());
-			message = MessageUtils.addErrorMessage(be.getCode(), be.getParams());
+			logDebug("Ocorreu um erro em {0}.{1} [{2}] --> {3}", new Object[] { stack.getClassName(), stack.getMethodName(), Integer.valueOf(stack.getLineNumber()), be.getCode() });
+			this.message = MessageUtils.addErrorMessage(be.getCode(), be.getParams());
 		} else {
-			logError("Ocorreu um erro fatal {4} em {0}.{1} [{2}] --> {3}", stack.getClassName(), stack.getMethodName(), stack.getLineNumber(), exception.getMessage(), exception.getClass().getName());
-			message = MessageUtils.addErrorMessage("genericError");
+			logError("Ocorreu um erro fatal {4} em {0}.{1} [{2}] --> {3}", new Object[] { stack.getClassName(), stack.getMethodName(), Integer.valueOf(stack.getLineNumber()), exception.getMessage(),
+					exception.getClass().getName() });
+			this.message = MessageUtils.addErrorMessage("genericError");
 		}
 	}
 
@@ -276,7 +271,7 @@ public class BasicController implements Serializable {
 	 * @param params
 	 */
 	protected void logDebug(String message, Object... params) {
-		
+
 		if (message == null) {
 			return;
 		}
@@ -285,7 +280,11 @@ public class BasicController implements Serializable {
 			message = MessageFormat.format(message, params);
 		}
 
-		logger.debug(getUser().getEmail() + " --> " + message);
+		if ((this.sessionBean != null) && (this.sessionBean.getUser() != null)) {
+			this.logger.debug(this.sessionBean.getUser().getEmail() + " --> " + message);
+		} else {
+			this.logger.debug("(NL) --> " + message);
+		}
 	}
 
 	/**
@@ -300,6 +299,14 @@ public class BasicController implements Serializable {
 			message = MessageFormat.format(message, params);
 		}
 
-		logger.error(getUser().getEmail() + " --> " + message);
+		if ((this.sessionBean != null) && (this.sessionBean.getUser() != null)) {
+			this.logger.error(this.sessionBean.getUser() + " --> " + message);
+		} else {
+			this.logger.error("(NL) --> " + message);
+		}
+	}
+
+	public Date getDataAtual() {
+		return new Date();
 	}
 }
