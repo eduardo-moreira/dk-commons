@@ -97,8 +97,8 @@ public class MessageUtils {
 	 */
 	public static Message addErrorMessage(String titleId, String messageId, Object[] params) {
 		Message message = new Message(FacesMessage.SEVERITY_ERROR, titleId, messageId, params);
-		RequestContext.getCurrentInstance().execute("showError('" + message.getTitle() + "', '" + message.getText() + "');");
-		return message;		
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message.getTitle(), message.getText()));
+		return message;
 	}
 
 	/**

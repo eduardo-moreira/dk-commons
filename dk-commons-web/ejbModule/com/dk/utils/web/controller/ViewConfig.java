@@ -22,6 +22,19 @@ public @interface ViewConfig {
 	/**
 	 * Caminho completo para a página a ser exibida pelo control.
 	 */
-	String page();
+	String page() default "";
 
+	/**
+	 * Caminho completo para página de listagem.
+	 * 
+	 * @return
+	 */
+	String listView() default "";
+
+	/**
+	 * Caminho completo para página de edição.
+	 * 
+	 * @return
+	 */
+	String editView() default "";
 }

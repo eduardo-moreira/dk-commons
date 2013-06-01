@@ -164,6 +164,30 @@ public class BasicController implements Serializable {
 	}
 
 	/**
+	 * Recupera o valor da propriedade message.
+	 * 
+	 * @return message
+	 */
+	public boolean getMessage(boolean clear) {
+		if (clear) {
+			message = null;
+		}
+		return clear;
+	}
+
+	/**
+	 * Valida se irá mostrar uma mensagem. Após isto, zera a mensagem.
+	 * 
+	 * @return
+	 */
+	public boolean isShowMessage() {
+		System.out.println("isShowMessage");
+		boolean h = message != null;
+		message = null;
+		return h;
+	}
+
+	/**
 	 * Atribui valor a propriedade message.
 	 * 
 	 * @param message
