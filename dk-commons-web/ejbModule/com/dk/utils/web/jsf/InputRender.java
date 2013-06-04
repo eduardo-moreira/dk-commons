@@ -56,7 +56,7 @@ public class InputRender extends TextRenderer {
 			writer.startElement("input", component);
 			writeIdAttributeIfNecessary(context, writer, component);
 
-			if (currentValue != null) {
+			if (type != null) {
 				writer.writeAttribute("type", type, null);
 			}
 			else {
