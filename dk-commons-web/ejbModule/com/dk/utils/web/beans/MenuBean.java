@@ -154,9 +154,11 @@ public class MenuBean implements Serializable {
 		//
 		// Ação JSF
 		final Class<?>[] paramTypes = {};
-
-		action += ".createListView";
-
+		
+		if (action.split("\\.").length == 1) {
+			action += ".createListView";
+		}
+		
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExpressionFactory ef = fc.getApplication().getExpressionFactory();
 		return (String) ef.createMethodExpression(fc.getELContext(), "#{" + action + "}", String.class, paramTypes).invoke(fc.getELContext(), null);
