@@ -5,6 +5,7 @@ package com.dk.utils.service.common;
 
 import com.dk.utils.persistence.common.GenericDAO;
 import com.dk.utils.persistence.common.GenericDAOFactory;
+import com.dk.utils.service.endereco.LogradouroService;
 import com.dk.utils.service.system.ParametrizacaoService;
 import com.dk.utils.service.system.PerfilService;
 import com.dk.utils.service.system.UserService;
@@ -138,6 +139,18 @@ public abstract class GenericServiceFactoryImpl implements GenericServiceFactory
 	public UserService getUserService() {
 		UserService service = new UserService();
 		service.setDao(getDAOFactory().getUserDAO());
+		return service;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.dk.utils.service.common.GenericServiceFactory#getService()
+	 */
+	@Override
+	public LogradouroService getLogradouroService() {
+		LogradouroService service = new LogradouroService();
+		service.setDao(getDAOFactory().getLogradouroDAO());
 		return service;
 	}
 

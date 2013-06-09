@@ -336,6 +336,8 @@ public abstract class MobileViewController<T> extends BasicController {
 			return getViewConfig().listView();
 
 		} catch (Exception be) {
+			
+			be.printStackTrace();
 
 			handleErrors(be);
 

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import javax.ejb.Local;
 import javax.persistence.EntityManager;
 
+import com.dk.utils.persistence.endereco.LogradouroDAO;
 import com.dk.utils.persistence.system.ParametrizacaoDAO;
 import com.dk.utils.persistence.system.PerfilDAO;
 import com.dk.utils.persistence.system.UserDAO;
@@ -90,4 +91,11 @@ public interface GenericDAOFactory extends Serializable {
 	 * @return
 	 */
 	UserDAO getUserDAO();
+
+	/**
+	 * Recupera uma nova instancia de {@link LogradouroDAO}.
+	 * 
+	 * @return
+	 */
+	LogradouroDAO getLogradouroDAO();
 }

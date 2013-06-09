@@ -8,6 +8,7 @@ import java.io.Serializable;
 import javax.ejb.Local;
 
 import com.dk.utils.persistence.common.GenericDAOFactory;
+import com.dk.utils.service.endereco.LogradouroService;
 import com.dk.utils.service.system.ParametrizacaoService;
 import com.dk.utils.service.system.PerfilService;
 import com.dk.utils.service.system.UserService;
@@ -85,4 +86,11 @@ public interface GenericServiceFactory extends Serializable {
 	 * @return
 	 */
 	UserService getUserService();
+	
+	/**
+	 * Recupera uma nova instancia de {@link LogradouroService}.
+	 * 
+	 * @return
+	 */
+	LogradouroService getLogradouroService();
 }

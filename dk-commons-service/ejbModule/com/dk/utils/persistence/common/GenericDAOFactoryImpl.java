@@ -3,6 +3,7 @@
  */
 package com.dk.utils.persistence.common;
 
+import com.dk.utils.persistence.endereco.LogradouroDAO;
 import com.dk.utils.persistence.system.ParametrizacaoDAO;
 import com.dk.utils.persistence.system.PerfilDAO;
 import com.dk.utils.persistence.system.UserDAO;
@@ -107,6 +108,18 @@ public abstract class GenericDAOFactoryImpl implements GenericDAOFactory {
 	@Override
 	public UserDAO getUserDAO() {
 		UserDAO dao = new UserDAO();
+		dao.setManager(getEntityManager());
+		return dao;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.dk.utils.persistence.GenericDAOFactory#getLogradouroDAO()
+	 */
+	@Override
+	public LogradouroDAO getLogradouroDAO() {
+		LogradouroDAO dao = new LogradouroDAO();
 		dao.setManager(getEntityManager());
 		return dao;
 	}
