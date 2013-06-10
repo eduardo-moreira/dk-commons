@@ -2,7 +2,10 @@ package com.dk.utils.service.common;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.text.MessageFormat;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.dk.utils.annotations.History;
 import com.dk.utils.domain.system.EntityOperationType;
@@ -40,6 +43,19 @@ public class GenericService<T> implements Serializable {
 	 * O usuário já foi validado pela interface que o chama.
 	 */
 	protected User currentUser;
+
+	/**
+	 * Logger.
+	 */
+	protected Logger logger;
+
+	/**
+	 * Cria uma nova instancia de GenericService.
+	 */
+	public GenericService() {
+		super();
+		logger = Logger.getLogger(this.getClass());
+	}
 
 	@SuppressWarnings("unchecked")
 	public Class<T> getEntityClass() {
@@ -206,4 +222,39 @@ public class GenericService<T> implements Serializable {
 	public int countCollection(long id, String collection) {
 		return dao.countCollection(id, collection);
 	}
+
+	/**
+	 * Loga uma mensagem no nivel de debug.
+	 * 
+	 * @param message
+	 * @param params
+	 */
+	protected void logDebug(String message, Object... params) {
+
+		if (message == null) {
+			return;
+		}
+
+		if (params != null) {
+			message = MessageFormat.format(message, params);
+		}
+
+		this.logger.debug(this.getClass().getSimpleName() + " --> " + message);
+	}
+
+	/**
+	 * Loga uma mensagem no nivel de error.
+	 * 
+	 * @param message
+	 * @param params
+	 */
+	protected void logError(String message, Object... params) {
+
+		if (params != null) {
+			message = MessageFormat.format(message, params);
+		}
+
+		this.logger.error(this.getClass().getSimpleName() + " --> " + message);
+	}
+
 }

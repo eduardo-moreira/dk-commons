@@ -249,7 +249,7 @@ public class GenericDAO<T> implements Serializable {
 		StringBuilder where = new StringBuilder();
 
 		// Capturando campos da entidade
-		List<Field> fields = ReflectionUtils.getDeclaredFields(this.persistentClass);
+		List<Field> fields = ReflectionUtils.getDeclaredFields(filter.getClass());
 		List<Object> values = new ArrayList<Object>();
 
 		// Verificando campos
