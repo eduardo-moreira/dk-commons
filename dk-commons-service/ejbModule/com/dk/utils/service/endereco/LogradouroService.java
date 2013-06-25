@@ -2,6 +2,8 @@ package com.dk.utils.service.endereco;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.dk.utils.domain.endereco.Localidade;
 import com.dk.utils.domain.endereco.Logradouro;
 import com.dk.utils.exception.BusinessException;
@@ -37,6 +39,10 @@ public class LogradouroService extends GenericService<Logradouro> {
 	 * @throws Exception
 	 */
 	public Logradouro loadByCep(String cep) throws Exception {
+		
+		if (StringUtils.isEmpty(cep)) {
+			throw new BusinessException("informeCEP");
+		}
 
 		// Removendo caracteres
 		cep = cep.replaceAll("-", "").replace(".", "").trim();
