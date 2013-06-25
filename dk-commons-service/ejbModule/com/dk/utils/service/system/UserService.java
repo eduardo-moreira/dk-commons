@@ -41,49 +41,53 @@ public class UserService extends GenericService<User> {
 
 		User user = null;
 
-	    User filter = new User();
-	    filter.setEmail(email);
+		User filter = new User();
+		filter.setEmail(email);
 
-	    List<User> login = getDao().list(filter, false);
+		List<User> login = getDao().list(filter, false);
 
-	    if ((login != null) && (login.size() == 1))
-	    {
-	      password = CryptoUtis.encode(password);
-	      user = (User)login.get(0);
+		if ((login != null) && (login.size() == 1)) {
+			
+			password = CryptoUtis.encode(password);
 
-	      if (!user.getPassword().equals(password))
-	        throw new BusinessException("login.senhaInvalida");
-	    }
-	    else {
-	      throw new BusinessException("login.userInvalido");
-	    }
-	    
-	    ResourceDAO resourceDAO = new ResourceDAO();
-	    
-	    if ("admin".equals(email))
-	    {
-	      user = new User();
-	      user.setNome("Administrador");
+			if (!login.get(0).getPassword().equals(password)) {
+				throw new BusinessException("login.senhaInvalida");
+			}
 
-	      Perfil perfilAdmin = new Perfil();
-	      resourceDAO.setManager(getDao().getManager());
-	      Module module = new Module();
-	      module.setResources(resourceDAO.listAll());
-	      perfilAdmin.addModule(module);
-	      user.addPerfil(perfilAdmin);
-	    }
-	    else
-	    {
-	    	// Inicializando modulos.
-	    	for (Perfil p : user.getPerfis()) {
-	    		for (Module m : p.getModules()) {
-	    			m.getResources().size();
-	    		}
-	    	}
+			// Tudo
+			ResourceDAO resourceDAO = new ResourceDAO();
 
-	    }
+			if ("admin".equals(email)) {
 
-	    return user;
+				// Admin irá assumir todos os perfis
+				user = new User();
+				user.setId(login.get(0).getId());
+				user.setEmail(login.get(0).getEmail());
+				user.setNome("Administrador Master");
+				
+				Perfil perfilAdmin = new Perfil();
+				resourceDAO.setManager(getDao().getManager());
+				Module module = new Module();
+				module.setResources(resourceDAO.listAll());
+				perfilAdmin.addModule(module);
+				user.addPerfil(perfilAdmin);
+			} else {
+
+				user = login.get(0);
+
+				// Inicializando modulos.
+				for (Perfil p : user.getPerfis()) {
+					for (Module m : p.getModules()) {
+						m.getResources().size();
+					}
+				}
+			}
+
+		} else {
+			throw new BusinessException("login.userInvalido");
+		}
+
+		return user;
 	}
 
 }

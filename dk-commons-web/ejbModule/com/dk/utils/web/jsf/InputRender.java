@@ -51,6 +51,9 @@ public class InputRender extends TextRenderer {
 		String dataMini = (String) component.getAttributes().get("data-mini");
 		String dataRole = (String) component.getAttributes().get("data-role");
 		String dataTheme = (String) component.getAttributes().get("data-theme");
+		String dataHighlight = (String) component.getAttributes().get("data-highlight");
+		String min = (String) component.getAttributes().get("min");
+		String max = (String) component.getAttributes().get("max");
 		
 		if (component instanceof UIInput) {
 			writer.startElement("input", component);
@@ -102,6 +105,18 @@ public class InputRender extends TextRenderer {
 			
 			if (dataTheme != null) {
 				writer.writeAttribute("data-theme", dataTheme, null);
+			}
+
+			if (dataHighlight != null) {
+				writer.writeAttribute("data-highlight", dataHighlight, null);
+			}
+			
+			if (min != null) {
+				writer.writeAttribute("min", min, null);
+			}
+			
+			if (max != null) {
+				writer.writeAttribute("max", max, null);
 			}
 			
 			// style is rendered as a passthur attribute
