@@ -375,10 +375,18 @@ public class ReflectionUtils {
 				met = object.getClass().getMethod("get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), new Class[] {});
 			}
 			catch(NoSuchMethodException e) {
-				met = object.getClass().getMethod("is" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), new Class[] {});
+				try {
+					met = object.getClass().getMethod("is" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), new Class[] {});
+				}
+				catch(Exception e1) {}
 			}
 			
-			result = met.invoke(object, new Object[] {});
+			if (met != null) {
+				result = met.invoke(object, new Object[] {});
+			}
+			else {
+				result = null;
+			}
 		} else {
 
 			Method met = object.getClass().getMethod("get" + tmp[0].substring(0, 1).toUpperCase() + tmp[0].substring(1), new Class[] {});

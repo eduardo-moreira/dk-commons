@@ -190,7 +190,7 @@ public class GenericDAO<T> implements Serializable {
 		Field fieldOrder = ReflectionUtils.getDescriptor(persistentClass);
 
 		if (fieldOrder != null) {
-			where.append(" ORDER BY " + fieldOrder.getName());
+			where.append(" ORDER BY obj." + fieldOrder.getName());
 		}
 
 		Query queryData = manager.createQuery(where.toString());
@@ -341,8 +341,24 @@ public class GenericDAO<T> implements Serializable {
 		}
 		
 		if (orderBy != null) {
-		      query.append(" ORDER BY " + orderBy);
+			
+			// Organizando order by
+			String[] aux = orderBy.split(",");
+			
+			orderBy = "";
+			
+			for (String s : aux) {
+				if (!orderBy.isEmpty()) {
+					orderBy += ", ";
+				}
+				
+				orderBy+= " obj." + s.trim();
+			}
+		     
+			query.append(" ORDER BY " + orderBy);
 		} 
+		
+		System.out.println(query.toString());
 
 		Query queryData = manager.createQuery(query.toString());
 
