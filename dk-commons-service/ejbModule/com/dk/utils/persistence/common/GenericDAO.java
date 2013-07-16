@@ -424,6 +424,7 @@ public class GenericDAO<T> implements Serializable {
 	 */
 	public void setManager(EntityManager manager) {
 		this.manager = manager;
+		manager.getEntityManagerFactory().getCache().evictAll();
 	}
 
 	/**
