@@ -7,16 +7,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.el.ExpressionFactory;
-import javax.faces.context.FacesContext;
-import javax.faces.model.ListDataModel;
-
-import org.primefaces.component.menuitem.MenuItem;
-import org.primefaces.component.submenu.Submenu;
-import org.primefaces.context.RequestContext;
-import org.primefaces.model.DefaultMenuModel;
-import org.primefaces.model.MenuModel;
-import org.primefaces.model.SelectableDataModel;
 
 import com.dk.utils.annotations.History;
 import com.dk.utils.domain.system.EntityHistory;
@@ -24,7 +14,6 @@ import com.dk.utils.reflection.ReflectionUtils;
 import com.dk.utils.service.common.GenericService;
 import com.dk.utils.service.system.resource.EntityHistoryService;
 import com.dk.utils.web.message.MessageUtils;
-import com.dk.utils.web.text.ResourcesUtils;
 
 /**
  * ViewController genérico.<br>
@@ -55,11 +44,6 @@ public abstract class GenericViewController<T> extends BasicController {
 	 * Lista de formulários.
 	 */
 	protected List<T> records;
-
-	/**
-	 * {@link SelectableDataModel}.
-	 */
-	protected SelectableDataModel<T> model;
 
 	/**
 	 * Registro de edição atual.
@@ -95,11 +79,6 @@ public abstract class GenericViewController<T> extends BasicController {
 	 * Serviço.
 	 */
 	protected GenericService<T> service;
-
-	/**
-	 * Controla a barra de menu.
-	 */
-	private MenuModel recentMenuModel;
 
 	/**
 	 * Tipo da entidade.
@@ -145,25 +124,6 @@ public abstract class GenericViewController<T> extends BasicController {
 	}
 
 	/**
-	 * Recupera o valor da propriedade recentMenuModel.
-	 * 
-	 * @return recentMenuModel
-	 */
-	public MenuModel getRecentMenuModel() {
-		return recentMenuModel;
-	}
-
-	/**
-	 * Atribui valor a propriedade recentMenuModel.
-	 * 
-	 * @param recentMenuModel
-	 *            novo valor para recentMenuModel
-	 */
-	public void setRecentMenuModel(MenuModel recentMenuModel) {
-		this.recentMenuModel = recentMenuModel;
-	}
-
-	/**
 	 * Recupera o valor da propriedade records.
 	 * 
 	 * @return records
@@ -180,25 +140,6 @@ public abstract class GenericViewController<T> extends BasicController {
 	 */
 	public void setRecords(List<T> records) {
 		this.records = records;
-	}
-
-	/**
-	 * Recupera o valor da propriedade model.
-	 * 
-	 * @return model
-	 */
-	public SelectableDataModel<T> getModel() {
-		return model;
-	}
-
-	/**
-	 * Atribui valor a propriedade model.
-	 * 
-	 * @param model
-	 *            novo valor para model
-	 */
-	public void setModel(SelectableDataModel<T> model) {
-		this.model = model;
 	}
 
 	/**
@@ -323,30 +264,6 @@ public abstract class GenericViewController<T> extends BasicController {
 	}
 
 	/**
-	 * Exibe o dialogo para editar/inserir registros.<br>
-	 * Default: dialog.show();
-	 */
-	protected void showEditDialog() {
-		RequestContext.getCurrentInstance().execute("dialog.show()");
-	}
-
-	/**
-	 * Oculta o dialogo para editar/inserir registros.<br>
-	 * Default: dialog.show();
-	 */
-	protected void hideEditDialog() {
-		RequestContext.getCurrentInstance().execute("dialog.hide()");
-	}
-
-	/**
-	 * Exibe o dialogo para remover de registro.<br>
-	 * Default: confirmRemove.show();
-	 */
-	protected void showRemoveDialog() {
-		RequestContext.getCurrentInstance().execute("confirmRemove.show()");
-	}
-
-	/**
 	 * Cria a tela.
 	 * 
 	 * @return
@@ -366,9 +283,6 @@ public abstract class GenericViewController<T> extends BasicController {
 			// Zerando o registro de edição/busca atual.
 			currentRecord = getEntityClass().newInstance();
 			filterRecord = getEntityClass().newInstance();
-
-			// Carrendo historico, caso esteja ativado
-			loadRecentHistory();
 
 			super.createView();
 
@@ -410,7 +324,6 @@ public abstract class GenericViewController<T> extends BasicController {
 
 			service.setCurrentUser(getUser());
 			records = service.list(filterRecord, anyFieldSearch);
-			model = new DataModel();
 
 			logDebug("Pesquisa realizada com sucesso!");
 
@@ -457,7 +370,7 @@ public abstract class GenericViewController<T> extends BasicController {
 
 			// Exibindo formulário de edição
 			if (showOnComplete) {
-				showEditDialog();
+				// showEditDialog();
 				logDebug("Exibindo registro lido.");
 			}
 
@@ -473,7 +386,7 @@ public abstract class GenericViewController<T> extends BasicController {
 	public void prepareInsert() {
 		try {
 			currentRecord = getEntityClass().newInstance();
-			showEditDialog();
+			// showEditDialog();
 			logDebug("Exibindo tela de novo {0}", getEntityClass().getSimpleName());
 		} catch (Exception e) {
 			handleErrors(e);
@@ -499,7 +412,7 @@ public abstract class GenericViewController<T> extends BasicController {
 
 				userTransaction.commit();
 
-				showEditDialog();
+				// showEditDialog();
 
 				logDebug("Exibindo tela de edição.");
 
@@ -549,31 +462,11 @@ public abstract class GenericViewController<T> extends BasicController {
 				filterRecord = getEntityClass().newInstance();
 			}
 
-			// Carrendo historico, caso esteja ativado
-			loadRecentHistory();
-
 			// Adicionando mensagem de sucesso
 			message = MessageUtils.addInformationMessage("saveSuccess");
 
-			hideEditDialog();
-
 		} catch (Exception be) {
 			handleErrors(be);
-		}
-	}
-
-	/**
-	 * Valida seleção, caso tenha registro selecionado, exibe confirmação.
-	 */
-	public void prepareRemove() {
-
-		long pId = ReflectionUtils.getIdValue(selectedRecord);
-
-		if (selectedRecord == null || pId == 0L) {
-			message = MessageUtils.addErrorMessage("removeNoSelected");
-		} else {
-			showRemoveDialog();
-			logDebug("Confirmando remoçao de {0}; id: {1}...", getEntityClass().getSimpleName(), pId);
 		}
 	}
 
@@ -609,9 +502,6 @@ public abstract class GenericViewController<T> extends BasicController {
 			// Limpando selecionado
 			selectedRecord = null;
 
-			// Carrendo historico, caso esteja ativado
-			loadRecentHistory();
-
 			// Adicionando mensagem de sucesso
 			message = MessageUtils.addInformationMessage("removeSuccess");
 
@@ -640,119 +530,6 @@ public abstract class GenericViewController<T> extends BasicController {
 		} catch (Exception e) {
 			handleErrors(e);
 		}
-	}
-
-	/**
-	 * Carrega a lista de registros recentes.
-	 */
-	protected void loadRecentHistory() {
-		loadRecentHistory(getEntityClass(), "#{" + getBeanName() + ".loadRecent(\"?\")}", "form:display");
-	}
-
-	/**
-	 * Carrega a lista de registros recentes.
-	 * 
-	 * @param classe
-	 * @param action
-	 * @param update
-	 */
-	protected void loadRecentHistory(Class<?> classe, String action, String update) {
-
-		if (!isActivatedHistory()) {
-			return;
-		}
-
-		try {
-			EntityHistoryService service = serviceFactory.getEntityHistoryService();
-
-			logDebug("Carregando lista de {0} recentes...", getEntityClass().getSimpleName());
-
-			recentHistory = service.recentHistory(classe, getUser(), 5);
-
-			logDebug("Lista carregada com sucesso!");
-
-			// Criando ou zerando menu
-			if (recentMenuModel == null) {
-				recentMenuModel = new DefaultMenuModel();
-			} else {
-				recentMenuModel.getContents().clear();
-			}
-
-			Submenu submenu = new Submenu();
-			submenu.setLabel(ResourcesUtils.getFormLabel("recents"));
-			recentMenuModel.addSubmenu(submenu);
-
-			if (recentHistory != null) {
-
-				int uniqueID = 0;
-
-				for (EntityHistory e : recentHistory) {
-					MenuItem item = new MenuItem();
-					item.setId("mnuItemRecent" + uniqueID++);
-					item.setValue(e.getDescriptor());
-					item.setIcon("ui-icon-triangle-1-e");
-
-					// Ação JSF
-					final Class<?>[] paramTypes = { String.class };
-					String myAction = action.replaceAll("\\?", String.valueOf(e.getEntityId()));
-
-					FacesContext fc = FacesContext.getCurrentInstance();
-					ExpressionFactory ef = fc.getApplication().getExpressionFactory();
-					item.setActionExpression(ef.createMethodExpression(fc.getELContext(), myAction, String.class, paramTypes));
-					item.setUpdate(update);
-
-					submenu.getChildren().add(item);
-				}
-			}
-
-		} catch (Exception e) {
-			handleErrors(e);
-		}
-	}
-
-	/**
-	 * Classe genérica para realizar o controle da tabela.
-	 * 
-	 * @author eduardo
-	 * 
-	 */
-	public class DataModel extends ListDataModel<T> implements SelectableDataModel<T> {
-
-		public DataModel() {
-			this.setWrappedData(records);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.primefaces.model.SelectableDataModel#getRowData(java.lang.String)
-		 */
-		@Override
-		public T getRowData(String rowKey) {
-
-			long id = Long.parseLong(rowKey);
-
-			for (T reg : records) {
-				if (ReflectionUtils.getIdValue(reg) == id) {
-					return reg;
-				}
-			}
-
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.primefaces.model.SelectableDataModel#getRowKey(java.lang.Object)
-		 */
-		@Override
-		public Object getRowKey(T obj) {
-			return ReflectionUtils.getIdValue(obj);
-		}
-
 	}
 
 }

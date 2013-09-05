@@ -7,8 +7,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
-
 /**
  * Classe utilitária para mensagens.
  * 
@@ -26,32 +24,12 @@ public class MessageUtils {
 	 * @param messageId
 	 * 
 	 */
-	public static void setMessage(Message message) {
-
-		if (message.getSeverity() == FacesMessage.SEVERITY_ERROR) {
-			RequestContext.getCurrentInstance().execute("showError('" + message.getTitle() + "', '" + message.getText() + "');");
-		}
-		else {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(message.getSeverity(), message.getTitle(), message.getText()));
-			RequestContext.getCurrentInstance().update("message");
-		}
-	}
-	
-	/**
-	 * 
-	 * @param severity
-	 * 
-	 * @param titleId
-	 * 
-	 * @param messageId
-	 * 
-	 */
 	public static Message addMessage(Severity severity, String titleId, String messageId) {
 		Message message = new Message(severity, titleId, messageId);
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, message.getTitle(), message.getText()));
 		return message;
 	}
-	
+
 	/**
 	 * Adiciona mensagem de erro.
 	 * 
@@ -150,5 +128,5 @@ public class MessageUtils {
 	public static Message addInformationMessage(String titleId, String messageId) {
 		return addMessage(FacesMessage.SEVERITY_INFO, titleId, messageId);
 	}
-	
+
 }

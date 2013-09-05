@@ -17,7 +17,6 @@ import javax.inject.Named;
 import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
 
 import com.dk.utils.domain.system.User;
 import com.dk.utils.exception.BusinessException;
@@ -207,29 +206,6 @@ public class BasicController implements Serializable {
 		this.sessionBean.setCurrentView(this);
 		handleErrors(e);
 		return FlowConstants.PAGE_ERROR;
-	}
-
-	/**
-	 * Executa um comando javascript no cliente.<br>
-	 */
-	protected void executeJS(String js) {
-		RequestContext.getCurrentInstance().execute(js);
-	}
-
-	/**
-	 * Exibe o dialogo para editar/inserir registros.<br>
-	 * Default: dialog.show();
-	 */
-	protected void showDialog(String name) {
-		RequestContext.getCurrentInstance().execute(name + ".show()");
-	}
-
-	/**
-	 * Oculta o dialogo para editar/inserir registros.<br>
-	 * Default: dialog.show();
-	 */
-	protected void hideDialog(String name) {
-		RequestContext.getCurrentInstance().execute(name + ".hide()");
 	}
 
 	/**
