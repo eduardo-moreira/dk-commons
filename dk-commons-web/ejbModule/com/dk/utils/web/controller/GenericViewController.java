@@ -290,7 +290,7 @@ public abstract class GenericViewController<T> extends BasicController {
 			return gotoErrorPage(e);
 		}
 
-		return getViewConfig().page();
+		return getViewConfig().listView();
 	}
 
 	/**

@@ -358,8 +358,6 @@ public class GenericDAO<T> implements Serializable {
 			query.append(" ORDER BY " + orderBy);
 		} 
 		
-		System.out.println(query.toString());
-
 		Query queryData = manager.createQuery(query.toString());
 
 		for (int i = 0; i < values.size(); i++) {
@@ -388,10 +386,43 @@ public class GenericDAO<T> implements Serializable {
 		Query queryData = manager.createQuery(where.toString());
 		queryData.setParameter(1, id);
 
-		Number countResult = (Number) queryData.getSingleResult();
-		return countResult.intValue();
+		try {
+			Number countResult = (Number) queryData.getSingleResult();
+			return countResult.intValue();
+		}
+		catch(Exception e) {
+			return 0;
+		}
 	}
-
+	
+	/**
+	 * Carrega uma colecao da entidade;
+	 * 
+	 * @param id
+	 * @param collection
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public List getCollection(long id, String collection) {
+		Class<T> myClass = (Class<T>) getPersistentClass();
+		StringBuilder where = new StringBuilder("SELECT obj.");
+		where.append(collection);
+		where.append(" FROM ");
+		where.append(myClass.getName());
+		where.append(" obj ");
+		where.append("WHERE obj.id = ?1");
+		
+		Query queryData = manager.createQuery(where.toString());
+		queryData.setParameter(1, id);
+		
+		try {
+			return queryData.getResultList();
+		}
+		catch(Exception e) {
+			return null;
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

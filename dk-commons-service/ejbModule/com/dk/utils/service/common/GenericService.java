@@ -222,6 +222,19 @@ public class GenericService<T> implements Serializable {
 	public int countCollection(long id, String collection) {
 		return dao.countCollection(id, collection);
 	}
+	
+	/**
+	 * Conta quantos registros uma coleçao de uma classe possui para um
+	 * determindo id.
+	 * 
+	 * @param id
+	 * @param collection
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public List getCollection(long id, String collection) {
+		return dao.getCollection(id, collection);
+	}
 
 	/**
 	 * Loga uma mensagem no nivel de debug.
