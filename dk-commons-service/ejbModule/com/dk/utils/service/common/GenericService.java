@@ -3,6 +3,7 @@ package com.dk.utils.service.common;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -222,7 +223,7 @@ public class GenericService<T> implements Serializable {
 	public int countCollection(long id, String collection) {
 		return dao.countCollection(id, collection);
 	}
-	
+
 	/**
 	 * Conta quantos registros uma coleçao de uma classe possui para um
 	 * determindo id.
@@ -268,6 +269,15 @@ public class GenericService<T> implements Serializable {
 		}
 
 		this.logger.error(this.getClass().getSimpleName() + " --> " + message);
+	}
+
+	/**
+	 * Recupera a data atual.
+	 * 
+	 * @return
+	 */
+	protected Date getDataAtual() {
+		return new Date();
 	}
 
 }

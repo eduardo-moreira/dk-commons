@@ -139,7 +139,7 @@ public class BasicController implements Serializable {
 	 * 
 	 * @return
 	 */
-	protected User getUser() {
+	public User getUser() {
 		return SessionUtils.getCurrentUser();
 	}
 
