@@ -140,7 +140,13 @@ public class BasicController implements Serializable {
 	 * @return
 	 */
 	public User getUser() {
-		return SessionUtils.getCurrentUser();
+		// return SessionUtils.getCurrentUser();
+		
+		if (sessionBean == null) {
+			return null;
+		}
+		
+		return sessionBean.getUser();
 	}
 
 	/**
@@ -308,5 +314,10 @@ public class BasicController implements Serializable {
 
 	public Date getDataAtual() {
 		return new Date();
+	}
+	
+	
+	protected void addInformationMessage(String messageId) {
+		MessageUtils.addInformationMessage(messageId);
 	}
 }
