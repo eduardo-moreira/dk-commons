@@ -77,6 +77,12 @@ public class User implements Serializable {
 	private Date dataCadastro;
 
 	/**
+	 * Data de cadastro atualizado no site.
+	 */
+	@Temporal(TemporalType.DATE)
+	private Date dataAtualizado;
+
+	/**
 	 * Perfil de acesso do cliente.
 	 */
 	@Transient
@@ -208,11 +214,11 @@ public class User implements Serializable {
 	 * @return perfil
 	 */
 	public Perfil getPerfil() {
-		
+
 		if (perfil == null && perfis != null && !perfis.isEmpty()) {
 			perfil = perfis.get(0);
 		}
-		
+
 		return perfil;
 	}
 
@@ -243,6 +249,25 @@ public class User implements Serializable {
 	 */
 	public void setPerfis(List<Perfil> perfis) {
 		this.perfis = perfis;
+	}
+
+	/**
+	 * Recupera o valor da propriedade dataAtualizado.
+	 * 
+	 * @return dataAtualizado
+	 */
+	public Date getDataAtualizado() {
+		return dataAtualizado;
+	}
+
+	/**
+	 * Atribui um novo valor para dataAtualizado
+	 * 
+	 * @param dataAtualizado
+	 *            novo valor para dataAtualizado
+	 */
+	public void setDataAtualizado(Date dataAtualizado) {
+		this.dataAtualizado = dataAtualizado;
 	}
 
 	/**

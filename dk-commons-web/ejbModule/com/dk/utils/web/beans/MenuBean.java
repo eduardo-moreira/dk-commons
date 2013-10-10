@@ -59,12 +59,12 @@ public class MenuBean implements Serializable {
 		this.userMenu = userMenu;
 	}
 
-	public void createUserMenu(User user) {
+	public void createUserMenu(User user, String dominio) {
 
 		try {
 			userMenu = new ArrayList<>();
 
-			List<Resource> userResources = user.getPerfil().getResources(ResourceType.FORM);
+			List<Resource> userResources = user.getPerfil().getResources(ResourceType.FORM, dominio);
 
 			createSystemMenu(userResources, user);
 

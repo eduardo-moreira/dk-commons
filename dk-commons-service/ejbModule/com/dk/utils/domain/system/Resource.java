@@ -76,6 +76,11 @@ public class Resource implements Serializable {
 	private String menuPath;
 
 	/**
+	 * Dominio. Exemplo: intranet.
+	 */
+	private String dominio;
+
+	/**
 	 * Label que apresentará na tela (menu).
 	 */
 	@Transient
@@ -353,7 +358,7 @@ public class Resource implements Serializable {
 	public Boolean getAjax() {
 		return ajax;
 	}
-	
+
 	/**
 	 * Recupera o valor da propriedade ajax.
 	 * 
@@ -371,6 +376,25 @@ public class Resource implements Serializable {
 	 */
 	public void setAjax(Boolean ajax) {
 		this.ajax = ajax;
+	}
+
+	/**
+	 * Recupera o valor da propriedade dominio.
+	 * 
+	 * @return dominio
+	 */
+	public String getDominio() {
+		return dominio;
+	}
+
+	/**
+	 * Atribui um novo valor para dominio
+	 * 
+	 * @param dominio
+	 *            novo valor para dominio
+	 */
+	public void setDominio(String dominio) {
+		this.dominio = dominio;
 	}
 
 	/*

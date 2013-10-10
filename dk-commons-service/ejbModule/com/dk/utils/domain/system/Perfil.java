@@ -167,16 +167,18 @@ public class Perfil implements Serializable {
 	 * 
 	 * @return
 	 */
-	public List<Resource> getResources(ResourceType resourceType) {
+	public List<Resource> getResources(ResourceType resourceType, String dominio) {
 		List<Resource> result = new ArrayList<>();
 
 		if (this.modules != null) {
 			for (Module m : this.modules) {
-				if (resourceType == null) {
+				
+				if (resourceType == null && dominio == null) {
 					result.addAll(m.getResources());
-				} else if (m.getResources() != null) {
+				} 
+				else if (m.getResources() != null) {
 					for (Resource r : m.getResources()) {
-						if (r.getResourceType() == resourceType) {
+						if ((resourceType == null || r.getResourceType() == resourceType) && (dominio == null || r.getDominio().equals(dominio))) {
 							result.add(r);
 						}
 					}
@@ -210,8 +212,8 @@ public class Perfil implements Serializable {
 	 * @param target
 	 * @return
 	 */
-	public Resource getResource(ResourceType resourceType, String target) {
-		List<Resource> lista = getResources(resourceType);
+	public Resource getResource(ResourceType resourceType, String target, String dominio) {
+		List<Resource> lista = getResources(resourceType, dominio);
 
 		for (Resource r : lista) {
 			if (r.getTarget().equals(target)) {

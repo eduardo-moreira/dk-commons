@@ -39,10 +39,10 @@ public class SessionBean implements Serializable {
 		return this.user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(User user, String dominio) {
 		this.user = user;
-		prepareUserResources();
-		this.menuBean.createUserMenu(user);
+		prepareUserResources(dominio);
+		this.menuBean.createUserMenu(user, dominio);
 	}
 
 	public BasicController getCurrentView() {
@@ -68,8 +68,10 @@ public class SessionBean implements Serializable {
 		this.menuBean.clear();
 	}
 
-	protected void prepareUserResources() {
+	protected void prepareUserResources(String dominio) {
+		
 		if (this.formsDisponiveis == null) {
+		
 			this.formsDisponiveis = new ArrayList<>();
 
 			if (controllerClasses == null) {
@@ -79,11 +81,10 @@ public class SessionBean implements Serializable {
 
 			for (Class classe : controllerClasses) {
 				FormAccessBean f = new FormAccessBean(classe);
-
 				this.formsDisponiveis.add(f);
 			}
 
-			for (Resource resource : this.user.getPerfil().getResources(null)) {
+			for (Resource resource : this.user.getPerfil().getResources(null, dominio)) {
 				int pos = this.formsDisponiveis.indexOf(new FormAccessBean("", resource.getTarget()));
 
 				if (pos != -1) {

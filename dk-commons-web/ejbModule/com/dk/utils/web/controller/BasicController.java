@@ -24,7 +24,6 @@ import com.dk.utils.service.common.GenericServiceFactory;
 import com.dk.utils.web.beans.SessionBean;
 import com.dk.utils.web.message.Message;
 import com.dk.utils.web.message.MessageUtils;
-import com.dk.utils.web.session.SessionUtils;
 
 /**
  * @author eduardo
@@ -140,8 +139,7 @@ public class BasicController implements Serializable {
 	 * @return
 	 */
 	public User getUser() {
-		// return SessionUtils.getCurrentUser();
-		
+
 		if (sessionBean == null) {
 			return null;
 		}
