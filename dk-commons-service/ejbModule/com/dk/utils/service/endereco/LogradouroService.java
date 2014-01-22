@@ -45,8 +45,12 @@ public class LogradouroService extends GenericService<Logradouro> {
 		}
 
 		// Removendo caracteres
-		cep = cep.replaceAll("-", "").replace(".", "").trim();
+		cep = cep.replaceAll("[^\\d]", "").trim();
 
+		if (cep.length() != 8) {
+			throw new BusinessException("cepInvalido");
+		}
+		
 		Logradouro filter = new Logradouro();
 		filter.setCep(Integer.parseInt(cep));
 

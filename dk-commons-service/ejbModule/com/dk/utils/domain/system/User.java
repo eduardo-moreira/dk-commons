@@ -91,7 +91,7 @@ public class User implements Serializable {
 	/**
 	 * Perfis associados ao usuário.
 	 */
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Perfil> perfis;
 
 	/**
